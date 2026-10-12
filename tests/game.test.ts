@@ -221,3 +221,49 @@ describe("finish adjudication regressions", () => {
     expect(r.score).toBe(0);
   });
 });
+describe("full challenge circuit simulation", () => {
+  it("earns all three medals with early ramp tricks and roundtrips summit progression", () => {
+    const save = freshSave();
+    for (let course = 0; course < 3; course++) {
+      const r = createRun(course);
+      for (let t = 0; t < 90 && r.status === "running"; t += 1 / 60) {
+        if (r.height > 1 && r.vy > 0) {
+          action(r, "spin");
+          action(r, "grab");
+        }
+        step(r, 1 / 60, { boost: r.boost > 50 });
+      }
+      expect(r.medal).toBe(true);
+      expect(r.score).toBeGreaterThanOrEqual(courses[course].target);
+      record(save, r);
+    }
+    expect(save.unlocked).toBe(2);
+    expect(Object.keys(save.records)).toHaveLength(3);
+    expect(normalizeSave(JSON.parse(JSON.stringify(save)))).toEqual(save);
+  });
+  it("takes the summit outer lip while bypassing its center lip", () => {
+    const r = createRun(2);
+    r.x = 0.68;
+    r.distance = 139;
+    step(r, 0.1);
+    expect(r.height).toBe(0);
+    r.distance = 174;
+    step(r, 0.1);
+    expect(r.height).toBeGreaterThan(0);
+  });
+  it("pauses and resumes midair without changing trick safety", () => {
+    const r = createRun(0);
+    action(r, "jump");
+    action(r, "spin");
+    advance(r, 0.2);
+    const height = r.height,
+      busy = r.trickTimeRemaining;
+    r.status = "paused";
+    advance(r, 10);
+    expect(r.height).toBe(height);
+    expect(r.trickTimeRemaining).toBe(busy);
+    r.status = "running";
+    advance(r, 1.5);
+    expect(r.score).toBe(300);
+  });
+});
