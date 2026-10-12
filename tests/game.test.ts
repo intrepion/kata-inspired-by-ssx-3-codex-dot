@@ -184,3 +184,40 @@ describe("save and records", () => {
     expect(s).toEqual(freshSave());
   });
 });
+describe("finish adjudication regressions", () => {
+  it("freezes at the actual crossing near a deadline", () => {
+    const r = createRun(0);
+    r.distance = 1049.9;
+    r.time = 64.9;
+    step(r, 1);
+    expect(r.medal).toBe(true);
+    expect(r.time).toBeLessThan(65);
+  });
+  it("waits for a real clean landing before banking airborne finish points", () => {
+    const r = createRun(0);
+    r.distance = 1049.9;
+    r.height = 4;
+    r.vy = 0;
+    r.pending = 480;
+    r.chain = 1;
+    step(r, 0.1);
+    expect(r.status).toBe("running");
+    expect(r.score).toBe(0);
+    advance(r, 1);
+    expect(r.status).toBe("finished");
+    expect(r.score).toBe(960);
+    expect(r.boost).toBeGreaterThan(0);
+  });
+  it("uses normal wipeout adjudication at an airborne finish", () => {
+    const r = createRun(0);
+    r.distance = 1049.9;
+    r.height = 0.01;
+    r.vy = -1;
+    r.trickTimeRemaining = 0.4;
+    r.pending = 300;
+    step(r, 0.1);
+    expect(r.status).toBe("finished");
+    expect(r.wipeouts).toBe(1);
+    expect(r.score).toBe(0);
+  });
+});

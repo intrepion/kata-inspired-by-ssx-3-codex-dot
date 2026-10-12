@@ -1,2 +1,3 @@
 # Projected arcade terrain
+
 Use a rear-view Canvas projection and deterministic distance-based terrain, with a separate pure simulation. True mesh physics would raise collision and camera costs; the chosen view preserves legible route choices and downhill speed within a compact game. Height is a ballistic jump scalar, not contact physics; slope, snow friction and angular momentum are intentionally simplified.

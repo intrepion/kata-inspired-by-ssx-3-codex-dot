@@ -280,10 +280,10 @@ function frame(now: number) {
     el("message").textContent = run.message;
     el("chain").textContent =
       run.height > 0
-        ? `AIR ${run.height.toFixed(1)} · ${run.busy > 0.04 ? "SETTLING" : "READY TO LAND"}`
+        ? `AIR ${run.height.toFixed(1)} · ${run.trickTimeRemaining > 0.04 ? "SETTLING" : "READY TO LAND"}`
         : `CHAIN ×${run.chain}`;
     el<HTMLMeterElement>("boost").value = run.boost;
-    el<HTMLMeterElement>("busy").value = run.busy;
+    el<HTMLMeterElement>("busy").value = run.trickTimeRemaining;
     el("air-label").style.opacity = run.height > 0 ? "1" : ".5";
     el("progress").style.width = `${(run.distance / c.length) * 100}%`;
     const next = terrain(run.course).find(

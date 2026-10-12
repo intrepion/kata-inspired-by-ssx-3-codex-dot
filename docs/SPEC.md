@@ -1,9 +1,10 @@
 # Afterglow Ridge
+
 Delegated design, 2026-10-12. No interactive interview occurred. Recommended choices are adopted under the user's explicit delegation.
 
 Original rider: Noor Vale, a courier following the evening light across the fictional Halcyon massif. Rear-view projected Canvas mountain; analogue lateral inertia, automatic downhill acceleration, brake/carve, ramps and manual ollies. This is an arcade abstraction, not a snow physics simulation. No SSX assets, tracks, characters or music.
 
-Three 40–65 second challenges: Blue Hour time trial; Copper Chute freestyle score; Aurora Traverse combined summit challenge. First completion unlocks the next challenge. Failure always allows retry. Repeat completed events to improve independent score/time records.
+Three 40–65 second challenges: Blue Hour time trial; Copper Chute freestyle score; Aurora Traverse combined summit challenge. First medal unlocks the next challenge. Failure always allows retry. Repeat completed events to improve independent score/time records.
 
 Public testing seams: exported run creation/update/action functions and save normalization; visible DOM controls and HUD. These seams are chosen under the delegated testing authority. Frame-independent simulation, bounded boost, one action per input edge, unique tricks per jump, timed landing readiness, obstacle collision, finish gating, pause and restart isolation, sanitized storage and progression must be tested.
 

@@ -35,17 +35,45 @@ export type Feature = {
 };
 export function terrain(course: number): Feature[] {
   const out: Feature[] = [];
-  for (let z = 140; z < courses[course].length - 70; z += 130) {
-    out.push(
-      { z, x: 0, type: "ramp", width: 0.3 },
-      {
-        z: z + 55,
-        x: Math.floor(z / 130) % 2 ? -0.62 : 0.62,
-        type: "tree",
+  const spacing = [130, 115, 155][course];
+  let index = 0;
+  for (let z = 140; z < courses[course].length - 70; z += spacing) {
+    out.push({ z, x: 0, type: "ramp", width: course === 2 ? 0.24 : 0.3 });
+    out.push({
+      z: z + 55,
+      x: index % 2 ? 0.62 : -0.62,
+      type: "tree",
+      width: 0.12,
+    });
+    if (course === 1)
+      out.push({
+        z: z + 85,
+        x: index % 2 ? 0.45 : -0.45,
+        type: "rock",
         width: 0.12,
-      },
-    );
-    if (course > 0) out.push({ z: z + 80, x: -0.38, type: "rock", width: 0.1 });
+      });
+    if (course === 2) {
+      out.push({
+        z: z + 95,
+        x: index % 2 ? -0.22 : 0.22,
+        type: "rock",
+        width: 0.11,
+      });
+      out.push({
+        z: z + 110,
+        x: index % 2 ? 0.68 : -0.68,
+        type: "tree",
+        width: 0.14,
+      });
+      // A wide outer jump is a genuine alternate freestyle line.
+      out.push({
+        z: z + 35,
+        x: index % 2 ? -0.68 : 0.68,
+        type: "ramp",
+        width: 0.18,
+      });
+    }
+    index++;
   }
   return out;
 }
@@ -58,7 +86,7 @@ export type Run = {
   time: number;
   height: number;
   vy: number;
-  busy: number;
+  trickTimeRemaining: number;
   tricks: string[];
   pending: number;
   score: number;
@@ -80,7 +108,7 @@ export const createRun = (course: number): Run => ({
   time: 0,
   height: 0,
   vy: 0,
-  busy: 0,
+  trickTimeRemaining: 0,
   tricks: [],
   pending: 0,
   score: 0,
@@ -98,7 +126,7 @@ export function wipeout(r: Run) {
   r.chain = 0;
   r.pending = 0;
   r.tricks = [];
-  r.busy = 0;
+  r.trickTimeRemaining = 0;
   r.height = 0;
   r.vy = 0;
   r.speed = 8;
@@ -116,33 +144,26 @@ export function action(r: Run, a: "jump" | "spin" | "grab") {
     }
     return;
   }
-  if (r.height <= 0 || r.busy > 0 || r.tricks.includes(a)) return;
+  if (r.height <= 0 || r.trickTimeRemaining > 0 || r.tricks.includes(a)) return;
   r.tricks.push(a);
-  r.busy = a === "spin" ? 0.65 : 0.4;
+  r.trickTimeRemaining = a === "spin" ? 0.65 : 0.4;
   r.pending += a === "spin" ? 300 : 180;
   r.message =
     a === "spin"
       ? "Orbit 360 · let it settle"
       : "Starlight grab · let it settle";
 }
-export function step(
-  r: Run,
-  dt: number,
-  input: { steer?: number; brake?: boolean; boost?: boolean } = {},
-) {
+export type RunInput = { steer?: number; brake?: boolean; boost?: boolean };
+export function step(r: Run, dt: number, input: RunInput = {}) {
   if (r.status !== "running") return;
   dt = Math.min(Math.max(dt, 0), 1);
-  for (let left = dt; left > 1e-7; left -= 1 / 120)
+  for (let left = dt; left > 1e-7 && r.status === "running"; left -= 1 / 120)
     tick(r, Math.min(left, 1 / 120), input);
 }
-function tick(
-  r: Run,
-  dt: number,
-  input: { steer?: number; brake?: boolean; boost?: boolean },
-) {
+function tick(r: Run, dt: number, input: RunInput) {
   r.time += dt;
   r.recovery = Math.max(0, r.recovery - dt);
-  r.busy = Math.max(0, r.busy - dt);
+  r.trickTimeRemaining = Math.max(0, r.trickTimeRemaining - dt);
   const boosting = input.boost && r.boost > 0 && r.recovery === 0;
   const target = r.recovery > 0 ? 11 : input.brake ? 12 : boosting ? 38 : 25;
   r.speed += (target - r.speed) * Math.min(1, dt * 2);
@@ -157,7 +178,7 @@ function tick(
     if (r.height <= 0) {
       r.height = 0;
       r.vy = 0;
-      if (r.busy > 0.04) wipeout(r);
+      if (r.trickTimeRemaining > 0.04) wipeout(r);
       else if (r.pending > 0) {
         r.chain = Math.min(5, r.chain + 1);
         const points = r.pending * r.chain;
@@ -185,15 +206,8 @@ function tick(
   });
   if (r.distance >= courses[r.course].length) {
     r.distance = courses[r.course].length;
+    if (r.height > 0) return; // Cross the line, then resolve the actual touchdown.
     r.status = "finished";
-    if (r.height > 0) {
-      if (r.busy > 0) wipeout(r);
-      else {
-        r.score += r.pending * Math.min(5, r.chain + 1);
-        r.pending = 0;
-      }
-      r.height = 0;
-    }
     const c = courses[r.course];
     r.medal = r.time <= c.time && r.score >= c.target;
     r.message = r.medal

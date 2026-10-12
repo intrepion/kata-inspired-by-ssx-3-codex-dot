@@ -168,7 +168,10 @@ export function render(
   ctx.fill();
   ctx.save();
   ctx.translate(rx, ry);
-  const spin = r?.tricks.includes("spin") && r.busy > 0 ? r.busy * 9 : 0;
+  const spin =
+    r?.tricks.includes("spin") && r.trickTimeRemaining > 0
+      ? r.trickTimeRemaining * 9
+      : 0;
   ctx.rotate(
     spin + (r?.vx ?? 0) * 0.28 + (r?.recovery ? Math.sin(clock * 30) * 0.6 : 0),
   );
@@ -197,7 +200,7 @@ export function render(
   ctx.moveTo(-12, -36);
   ctx.lineTo(-34, -22);
   ctx.moveTo(12, -36);
-  ctx.lineTo(r?.busy && r.tricks.includes("grab") ? 23 : 34, -20);
+  ctx.lineTo(r?.trickTimeRemaining && r.tricks.includes("grab") ? 23 : 34, -20);
   ctx.stroke();
   ctx.fillStyle = "#20364e";
   ctx.beginPath();
