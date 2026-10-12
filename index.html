@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#102538" />
+    <title>Afterglow Ridge</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2367e4ee' d='M5 90 50 8 95 90z'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <canvas
+      id="mountain"
+      aria-label="Rear view of Noor Vale snowboarding down Halcyon mountain"
+    ></canvas>
+    <header>
+      <a href="#" id="home" aria-label="Return to mountain menu"
+        >A<span>R</span><small>HALCYON / 03</small></a
+      >
+      <div class="top-actions">
+        <button id="sound" aria-pressed="false">Sound off</button
+        ><button id="motion" aria-pressed="false">Calm view</button
+        ><button id="pause">Pause · P</button>
+      </div>
+    </header>
+    <main id="menu">
+      <div class="eyebrow">AN ORIGINAL MOUNTAIN ARCADE</div>
+      <h1>AFTERGLOW<br /><em>RIDGE</em></h1>
+      <p class="lede">Chase the last light.<br />Carve your own way down.</p>
+      <div class="rider-tag">
+        <span class="dot"></span> NOOR VALE <span> / </span> HALCYON MASSIF
+      </div>
+      <div id="courses"></div>
+      <details>
+        <summary>How to ride</summary>
+        <p>
+          ← → or A / D carve · ↓ or S brake · Space ollie · J spin · K grab ·
+          Shift boost · P pause · R restart
+        </p>
+        <p>
+          Ride a cyan lip for big air. Each trick works once per jump. Let the
+          amber trick meter settle before touchdown. Clean tricks bank points
+          and earn boost. Successive trick jumps build a chain. A wipeout breaks
+          it. Side lanes bypass ramps and hazards.
+        </p>
+        <p>
+          Touch controls below work with mouse or fingers. All medals unlock the
+          next ridge.
+        </p>
+      </details>
+    </main>
+    <section id="hud" hidden>
+      <div class="hud-row">
+        <div>
+          <small id="event-label"></small><strong id="course-label"></strong>
+        </div>
+        <div>
+          <small>PACE</small
+          ><strong><span id="speed">0</span><i> km/h</i></strong>
+        </div>
+        <div><small>TIME / LIMIT</small><strong id="time"></strong></div>
+        <div><small>BANKED / TARGET</small><strong id="score"></strong></div>
+      </div>
+      <div class="progress"><div id="progress"></div></div>
+      <div class="live-info">
+        <span id="message"></span><span id="chain"></span>
+      </div>
+      <div class="meters">
+        <label>BOOST <meter id="boost" min="0" max="100"></meter></label
+        ><label id="air-label"
+          >TRICK SETTLING <meter id="busy" min="0" max=".65"></meter
+        ></label>
+      </div>
+      <div class="next-lip" id="next"></div>
+    </section>
+    <div id="controls" hidden>
+      <div>
+        <button data-hold="left" aria-label="Carve left">←</button
+        ><button data-hold="right" aria-label="Carve right">→</button
+        ><button data-hold="brake">Brake</button>
+      </div>
+      <div>
+        <button data-action="jump">Ollie</button
+        ><button data-action="spin">J · Spin</button
+        ><button data-action="grab">K · Grab</button
+        ><button data-hold="boost">Boost</button>
+      </div>
+    </div>
+    <section id="overlay" hidden>
+      <div class="panel">
+        <div class="eyebrow" id="result-kicker"></div>
+        <h2 id="result-title"></h2>
+        <p id="result-copy"></p>
+        <div id="result-stats"></div>
+        <button id="resume">Resume descent</button
+        ><button id="retry">Ride again · R</button
+        ><button id="return">Mountain menu</button>
+      </div>
+    </section>
+    <footer id="footer">
+      01 — FIND A LINE <span>02 — MAKE AIR</span> 03 — STICK THE LANDING
+    </footer>
+    <div id="announcer" class="sr-only" aria-live="polite"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
