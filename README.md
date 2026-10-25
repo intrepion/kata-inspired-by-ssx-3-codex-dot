@@ -62,3 +62,7 @@ Records and unlocks save at finish in this browser's localStorage under `aftergl
 ## Local mountain sample
 
 The default preview now offers one continuous headed 3D mountain slice with crouch/release jumps, prewind, held grabs and rotations, rails, balanced presses, bankable combos and earned boost. [Controls, scope and verification](docs/mountain-sample.md). The original circuit and its save remain at `?mode=classic`. This is a bounded vertical slice, not a full SSX 3 recreation.
+
+## Play online
+
+[Play the hosted game](https://intrepion.github.io/kata-inspired-by-ssx-3-codex-dot/)
