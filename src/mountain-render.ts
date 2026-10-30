@@ -15,7 +15,21 @@ export function renderMountain(ctx: CanvasRenderingContext2D, w: number, h: numb
   for (let layer = 0; layer < 3; layer++) { ctx.fillStyle = ['#3e597b', '#6b8caa', '#a3c2d2'][layer]; ctx.beginPath(); ctx.moveTo(0, h * .6); for (let i = 0; i <= 20; i++) ctx.lineTo(i * w / 20, h * (.35 + layer * .03) - Math.sin(i * 2.3 + layer) * 50); ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill(); }
   const faces: { points: Point[]; color: string; depth: number }[] = [];
   const start = Math.floor((m.z - 24) / 8) * 8;
-  function face(points: Point[], color: string) { const projected = points.map(project); if (projected.some(p => p.depth < .7)) return; faces.push({ points, color, depth: projected.reduce((s, p) => s + p.depth, 0) / projected.length }); }
+  function face(points: Point[], color: string) {
+    // Clip terrain at the near plane instead of dropping tiles under the rider.
+    const clipped: Point[] = [];
+    for (let i = 0; i < points.length; i++) {
+      const current = points[i], previous = points[(i + points.length - 1) % points.length];
+      const a = project(previous).depth, b = project(current).depth;
+      if ((a >= .7) !== (b >= .7)) {
+        const t = (.7 - a) / (b - a);
+        clipped.push({ x: previous.x + (current.x - previous.x) * t, y: previous.y + (current.y - previous.y) * t, z: previous.z + (current.z - previous.z) * t });
+      }
+      if (b >= .7) clipped.push(current);
+    }
+    if (clipped.length < 3) return;
+    faces.push({ points: clipped, color, depth: clipped.reduce((s, p) => s + project(p).depth, 0) / clipped.length });
+  }
   for (let z = start; z < m.z + 260; z += 8) for (let x = -60; x < 60; x += 6) {
     const points = [{ x, z, y: snowHeight(x, z) }, { x: x + 6, z, y: snowHeight(x + 6, z) }, { x: x + 6, z: z + 8, y: snowHeight(x + 6, z + 8) }, { x, z: z + 8, y: snowHeight(x, z + 8) }];
     const bank = Math.abs(x) > 36; face(points, bank ? '#abc6d0' : ((Math.floor(z / 8) + Math.floor(x / 6)) % 2 ? '#e2f2f5' : '#d4e9ee'));

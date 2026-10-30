@@ -66,3 +66,7 @@ The default preview now offers one continuous headed 3D mountain slice with crou
 ## Play online
 
 [Play the hosted game](https://intrepion.github.io/kata-inspired-by-ssx-3-codex-dot/)
+
+An experimental Three.js mountain view is available at `?view=three`. It shares the same simulation, inputs, scoring and records as the default view; the default remains available while visual and input playtesting of the new view is pending. Three.js 0.180.0 is bundled under its MIT license.
+
+The experimental view has a route map but does not yet reproduce the original feature labels. Use the default view for those navigation cues.

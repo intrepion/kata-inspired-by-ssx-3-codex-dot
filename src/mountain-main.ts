@@ -1,6 +1,7 @@
 import './mountain.css';
-import { createMountain, FINISH, normalizeMountainBest, stepMountain, type MountainInput } from './mountain';
+import { createMountain, FINISH, rails, normalizeMountainBest, stepMountain, type MountainInput } from './mountain';
 import { renderMountain } from './mountain-render';
+import type { createMountainThree } from './mountain-three';
 const arcadeNavigation = document.querySelector('[data-kata-arcade-nav]');
 document.body.innerHTML = `<canvas id="world" aria-label="Third person mountain with connected rail park, split backcountry and village"></canvas>
 <header><a href="?">AFTERGLOW <b>RIDGE</b></a><span>HALCYON / MOUNTAIN SAMPLE</span><a href="?mode=classic">Original circuit</a><button id="pause">Pause · P</button></header>
@@ -11,6 +12,17 @@ if (arcadeNavigation) document.querySelector("header")!.insertBefore(arcadeNavig
 const el = (id: string) => document.getElementById(id)!;
 const canvas = el('world') as HTMLCanvasElement, ctx = canvas.getContext('2d')!;
 let mountain = createMountain(), last = performance.now();
+// Opt-in until browser playtesting can validate the new view; original remains default.
+let threeView: ReturnType<typeof createMountainThree> | null = null;
+let routeMap: HTMLCanvasElement | null = null;
+if (new URLSearchParams(location.search).get('view') === 'three') {
+  void import('./mountain-three').then(({ createMountainThree }) => {
+    const threeCanvas = document.createElement('canvas'); threeCanvas.id = 'world-three';
+    threeCanvas.setAttribute('aria-hidden', 'true'); canvas.before(threeCanvas);
+    threeView = createMountainThree(threeCanvas); canvas.style.display = 'none'; routeMap=document.createElement('canvas');routeMap.width=120;routeMap.height=170;routeMap.style.cssText='position:fixed;inset:auto 20px 55px auto;width:120px;height:170px;z-index:1;pointer-events:none';routeMap.setAttribute('aria-hidden','true');document.body.append(routeMap);
+  }).catch((error: unknown) => { console.warn('3D view unavailable; using the original view.', error); document.getElementById('world-three')?.remove(); });
+}
+
 const held = new Set<string>(); let best = 0;
 try { best = normalizeMountainBest(localStorage.getItem('afterglow-mountain-v2-best')); } catch { /* Optional record; circuit saves are never read or written. */ }
 const key = (e: KeyboardEvent) => e.key.length === 1 ? e.key.toLowerCase() : e.key;
@@ -24,7 +36,7 @@ window.addEventListener('blur', () => { if (mountain.status === 'running') pause
 document.addEventListener('visibilitychange', () => { if (document.hidden && mountain.status === 'running') pause(); });
 function frame(now: number) { const dt = Math.min(.05, (now - last) / 1000); last = now; const previous = mountain.status; stepMountain(mountain, dt, input());
   if (previous === 'running' && mountain.status === 'finished') { best = Math.max(best, mountain.score); try { localStorage.setItem('afterglow-mountain-v2-best', String(best)); } catch { /* Gameplay stays available. */ } el('panel').hidden = false; el('panel').innerHTML = `<small>${mountain.medal ? 'SAMPLE TARGET CLEARED' : 'DESCENT COMPLETE'}</small><h1>${mountain.medal ? 'Ridge claimed.' : 'Another line awaits.'}</h1><p>${mountain.score} points · ${mountain.time.toFixed(1)}s · ${mountain.wipeouts} wipeouts<br>${mountain.rails} rails · ${mountain.cleanLandings} clean landings · best combo ${mountain.bestCombo}<br>Personal best ${best} · rival ${mountain.rivalZ < FINISH ? 'behind' : 'finished'}</p><button id="restart">Ride again · R</button><p>Target: 1,000 points inside 48s. Use presses to link a rail and a charged grab, then release to bank.</p>`; el('restart').onclick = start; held.clear(); }
-  const dpr = Math.min(devicePixelRatio, 2); if (canvas.width !== Math.floor(innerWidth * dpr) || canvas.height !== Math.floor(innerHeight * dpr)) { canvas.width = Math.floor(innerWidth * dpr); canvas.height = Math.floor(innerHeight * dpr); } ctx.setTransform(dpr,0,0,dpr,0,0); renderMountain(ctx,innerWidth,innerHeight,mountain);
+  const dpr = Math.min(devicePixelRatio, 2); if (canvas.width !== Math.floor(innerWidth * dpr) || canvas.height !== Math.floor(innerHeight * dpr)) { canvas.width = Math.floor(innerWidth * dpr); canvas.height = Math.floor(innerHeight * dpr); } if (threeView) { threeView.render(mountain,innerWidth,innerHeight); if(routeMap){routeMap.style.display=el('panel').hidden?'block':'none';const c=routeMap.getContext('2d')!;c.clearRect(0,0,120,170);c.fillStyle='#0b2a40dd';c.fillRect(0,0,120,170);c.strokeStyle='#91b8c8';c.strokeRect(22,10,76,145);c.strokeStyle='#efae76';for(const r of rails){c.beginPath();c.moveTo(60+r.x*.7,10+r.z/FINISH*145);c.lineTo(60+r.x*.7,10+r.end/FINISH*145);c.stroke();}c.fillStyle='#ed835b';c.beginPath();c.arc(60+mountain.x*.7,10+mountain.z/FINISH*145,4,0,Math.PI*2);c.fill();c.strokeStyle='white';c.beginPath();c.moveTo(60+mountain.x*.7,10+mountain.z/FINISH*145);c.lineTo(60+mountain.x*.7+Math.sin(mountain.heading)*10,10+mountain.z/FINISH*145+Math.cos(mountain.heading)*10);c.stroke();} } else { ctx.setTransform(dpr,0,0,dpr,0,0); renderMountain(ctx,innerWidth,innerHeight,mountain); }
   el('stats').innerHTML = `<div><small>${mountain.z < 260 ? 'SUMMIT / RAIL PARK' : mountain.z < 560 ? 'BACKCOUNTRY FORK' : 'LOWER RIDGE / VILLAGE'}</small><b>${Math.round(mountain.z)} / ${FINISH}m</b></div><div><small>PACE / TIME</small><b>${Math.round(mountain.speed * 3.6)} km/h · ${mountain.time.toFixed(1)}s</b></div><div><small>BANKED / COMBO</small><b>${mountain.score} / ${Math.round(mountain.combo)} ×${(1 + mountain.comboCount * .08).toFixed(2)}</b></div><div><small>ADRENALINE ${mountain.ubers >= 4 ? 'SUPER' : 'ÜBER'} ${mountain.ubers}/9</small><meter max="100" value="${mountain.superTime > 0 ? 100 : mountain.boost}"></meter><b>${mountain.superTime > 0 ? mountain.superTime.toFixed(1) + 's' : Math.round(mountain.boost) + '%'}</b></div>`;
   el('message').textContent = `${mountain.message} ${mountain.charge > 0 ? ' · CROUCH ' + Math.round(mountain.charge * 100) + '%' : mountain.air ? ' · AIR ' + Math.max(0,mountain.y + mountain.z * .22).toFixed(1) + 'm' : mountain.rail >= 0 || mountain.pressTime > 0 ? ' · BALANCE ' + mountain.balance.toFixed(2) : ''}`;
   requestAnimationFrame(frame);
