@@ -1,11 +1,13 @@
 import './mountain.css';
 import { createMountain, FINISH, normalizeMountainBest, stepMountain, type MountainInput } from './mountain';
 import { renderMountain } from './mountain-render';
+const arcadeNavigation = document.querySelector('[data-kata-arcade-nav]');
 document.body.innerHTML = `<canvas id="world" aria-label="Third person mountain with connected rail park, split backcountry and village"></canvas>
 <header><a href="?">AFTERGLOW <b>RIDGE</b></a><span>HALCYON / MOUNTAIN SAMPLE</span><a href="?mode=classic">Original circuit</a><button id="pause">Pause · P</button></header>
 <section id="stats" aria-label="Run statistics"></section><div id="message" role="status"></div>
 <section id="panel"><small>ONE CONTINUOUS DESCENT</small><h1>Make your line.</h1><p>A headed mountain, charged jumps, held tricks, rails and presses. Bank 1,000 points inside 48 seconds.</p><p>Rail park → backcountry fork → village. The violet rider races you downhill.</p><button id="start">Ride the mountain</button><details open><summary>Controls & landing</summary><p>A/D steer and rail balance · W tuck · S brake<br>Hold Space to crouch, release to jump. While crouched or airborne: ←/→ prewind/spin, ↑/↓ flip.<br>Hold Q/E grabs (combine for another grab). Release rotations and grabs before landing.<br>N/M nose/tail press; J/L counterbalance. Link tricks within 2 seconds to keep the combo.<br>Shift spends earned boost; full meter + airborne grab + Shift holds an ÜBER (.85s). Four ÜBERs unlock Super grabs; nine earn 15 seconds unlimited boost.<br>P/Escape pause · R retry. Blur pauses and clears input.</p></details><small>Original art and tuning. Bounded playable sample; no full mountain or campaign. Original circuit save is preserved.</small></section>
 <footer id="help">SPACE hold/release · A/D carve · ARROWS spin/flip · Q/E grab · SHIFT boost · N/M press</footer>`;
+if (arcadeNavigation) document.querySelector("header")!.insertBefore(arcadeNavigation, document.getElementById("pause"));
 const el = (id: string) => document.getElementById(id)!;
 const canvas = el('world') as HTMLCanvasElement, ctx = canvas.getContext('2d')!;
 let mountain = createMountain(), last = performance.now();
