@@ -70,3 +70,7 @@ The default preview now offers one continuous headed 3D mountain slice with crou
 An experimental Three.js mountain view is available at `?view=three`. It shares the same simulation, inputs, scoring and records as the default view; the default remains available while visual and input playtesting of the new view is pending. Three.js 0.180.0 is bundled under its MIT license.
 
 The experimental view has a route map but does not yet reproduce the original feature labels. Use the default view for those navigation cues.
+
+## Arcade metadata
+
+See [docs/arcade-metadata.md](docs/arcade-metadata.md) for the game-owned manifest and screenshot provenance.
