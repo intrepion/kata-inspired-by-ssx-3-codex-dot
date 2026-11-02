@@ -28,7 +28,7 @@ jobs:
         env:
           CAPTURE_OUTPUT: capture-output
         run: |
-          export GAME_SOURCE_COMMIT="$(git rev-parse HEAD^)"
+          export GAME_SOURCE_COMMIT="c86f570c3b433203ee5a568b1241a945abcc7799"
           python3 -m http.server 4277 --bind 127.0.0.1 --directory capture-site > /tmp/afterglow-http.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
