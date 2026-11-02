@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "gameId": "kata-inspired-by-ssx-3-codex-dot",
   "playUrl": "https://intrepion.github.io/kata-inspired-by-ssx-3-codex-dot/",
   "screenshots": [
@@ -23,6 +23,54 @@
         "sourcePath": "docs/screenshots/aurora-outer-jump.jpg",
         "deployedBuild": null,
         "captureDate": null
+      }
+    },
+    {
+      "path": "arcade/screenshots/ci-20261102-01.jpg",
+      "sha256": "f10013281c8966adb2760f8a7aaeef77e7e0954fdb78712b6d6fd9e4e719fcd2",
+      "alt": "Afterglow Ridge gameplay, view 1",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-01.png",
+        "sourceSha256": "418326f08fdf0b1afe95eff856fafd107b752b8e48328d6bd67d0f5cd99192a3",
+        "captureCommit": "c86f570c3b433203ee5a568b1241a945abcc7799",
+        "workflowRunId": "41437743909",
+        "inputHashes": {
+          "index.html": "a0e952029c20a15c112b2eda23eb7e3f64a81779978793cfa3e535fba6c134b7",
+          "assets/index-CXyvCXxa.js": "0cff4b1fb7df9b38fd44889864b11cffc9728132a99d5db4b862e5e07b752f57",
+          "assets/main-BZ_jfGhA.js": "ea7099ad89e5f002ed7a427869fb5e84b3bf4652a6cfd5678335c4d1bdbfc126",
+          "assets/main-CwGqhLO7.css": "4fa395825b9e0f8b16ae09aca830404326b3d8458efd294f9d387d0c8571756d",
+          "assets/mountain-main-CJev0r_u.js": "f42a900e4741a1270aa71c55881fe26ce74680fd03cbb14890b18c0abd769846",
+          "assets/mountain-main-xC0CNM40.css": "5605ae224737deb6c45c415171fdc169680aa5d48dad4d45275e992b1405c218",
+          "assets/mountain-three-A0PCsEI_.js": "f372dc558baab655323230cbb86951cd4adbdd588962822ed371e4cbe2f1b6c7"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "02b7ea0d684b167c9ec4df06c59003fa34e25bf1def503d1daa717a354f28a43"
+      }
+    },
+    {
+      "path": "arcade/screenshots/ci-20261102-02.jpg",
+      "sha256": "7a943616128e056317e42a50ea525cf8b9c6127173dec482cfd1ea11dadf29ac",
+      "alt": "Afterglow Ridge gameplay, view 2",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-02.png",
+        "sourceSha256": "dc21a71bd06eb15c81850495f5c4052730bbc059e0def7b3f62b932914b41ef7",
+        "captureCommit": "c86f570c3b433203ee5a568b1241a945abcc7799",
+        "workflowRunId": "41437743909",
+        "inputHashes": {
+          "index.html": "a0e952029c20a15c112b2eda23eb7e3f64a81779978793cfa3e535fba6c134b7",
+          "assets/index-CXyvCXxa.js": "0cff4b1fb7df9b38fd44889864b11cffc9728132a99d5db4b862e5e07b752f57",
+          "assets/main-BZ_jfGhA.js": "ea7099ad89e5f002ed7a427869fb5e84b3bf4652a6cfd5678335c4d1bdbfc126",
+          "assets/main-CwGqhLO7.css": "4fa395825b9e0f8b16ae09aca830404326b3d8458efd294f9d387d0c8571756d",
+          "assets/mountain-main-CJev0r_u.js": "f42a900e4741a1270aa71c55881fe26ce74680fd03cbb14890b18c0abd769846",
+          "assets/mountain-main-xC0CNM40.css": "5605ae224737deb6c45c415171fdc169680aa5d48dad4d45275e992b1405c218",
+          "assets/mountain-three-A0PCsEI_.js": "f372dc558baab655323230cbb86951cd4adbdd588962822ed371e4cbe2f1b6c7"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "02b7ea0d684b167c9ec4df06c59003fa34e25bf1def503d1daa717a354f28a43"
       }
     }
   ]
